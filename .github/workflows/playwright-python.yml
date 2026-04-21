@@ -51,7 +51,8 @@ jobs:
           if-no-files-found: warn
 
       - name: Send email notification
-        if: always() && secrets.SMTP_PASSWORD != ''
+        if: always()
+        continue-on-error: true
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -68,7 +69,3 @@ jobs:
             Branch: ${{ github.ref_name }}
             Status: ${{ job.status }}
             Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-      - name: Skip email notification (missing SMTP_PASSWORD)
-        if: always() && secrets.SMTP_PASSWORD == ''
-        run: echo "SMTP_PASSWORD secret is missing. Email notification was skipped."
