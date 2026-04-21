@@ -55,15 +55,18 @@ jobs:
       - name: Validate SMTP secrets
         id: smtp_check
         if: always()
-        continue-on-error: true
+        shell: bash
         run: |
-          if [ -z "$SMTP_USERNAME" ] || [ -z "$SMTP_PASSWORD" ]; then
-            echo "::error::Missing SMTP credentials. Set SMTP_USERNAME and SMTP_PASSWORD in repository secrets."
-            exit 1
+          if [[ -n "$SMTP_USERNAME" && -n "$SMTP_PASSWORD" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "SMTP secrets detected."
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Missing SMTP credentials. Set SMTP_USERNAME and SMTP_PASSWORD in repository secrets."
           fi
 
       - name: Send email notification
-        if: always() && steps.smtp_check.conclusion == 'success'
+        if: always() && steps.smtp_check.outputs.ready == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -82,5 +85,5 @@ jobs:
             Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Skip email notification
-        if: always() && steps.smtp_check.conclusion != 'success'
+        if: always() && steps.smtp_check.outputs.ready != 'true'
         run: echo "Email step skipped because SMTP secrets are missing or invalid."
