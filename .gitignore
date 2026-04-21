@@ -17,4 +17,9 @@ artifacts/
 
 # Large/local binaries
 *.zip
+python312/
+get-pip.py
+
+# Local output folders
+reports/
 

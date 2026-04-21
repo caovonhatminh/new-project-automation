@@ -49,3 +49,21 @@ jobs:
             artifacts/screenshots/
             artifacts/logs/
           if-no-files-found: warn
+
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "[GitHub Actions] ${{ github.repository }} - ${{ job.status }}"
+          to: caovonhatminh09091999@gmail.com
+          from: ${{ secrets.SMTP_FROM }}
+          body: |
+            Workflow: ${{ github.workflow }}
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Status: ${{ job.status }}
+            Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
