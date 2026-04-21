@@ -60,7 +60,8 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "[GitHub Actions] ${{ github.repository }} - ${{ job.status }}"
           to: caovonhatminh09091999@gmail.com
-          from: ${{ secrets.SMTP_FROM }}
+          # Fallback to SMTP_USERNAME when SMTP_FROM secret is not configured.
+          from: ${{ secrets.SMTP_FROM != '' && secrets.SMTP_FROM || secrets.SMTP_USERNAME }}
           body: |
             Workflow: ${{ github.workflow }}
             Repository: ${{ github.repository }}
