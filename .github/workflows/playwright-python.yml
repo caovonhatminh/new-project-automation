@@ -17,6 +17,8 @@ jobs:
     env:
       HEADLESS: "true"
       PYTHONUNBUFFERED: "1"
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
 
     steps:
       - name: Checkout repository
@@ -50,6 +52,14 @@ jobs:
             artifacts/logs/
           if-no-files-found: warn
 
+      - name: Validate SMTP secrets
+        if: always()
+        run: |
+          if [ -z "$SMTP_USERNAME" ] || [ -z "$SMTP_PASSWORD" ]; then
+            echo "::error::Missing SMTP credentials. Please set SMTP_USERNAME and SMTP_PASSWORD in repository secrets."
+            exit 1
+          fi
+
       - name: Send email notification
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -57,8 +67,8 @@ jobs:
           server_address: smtp.gmail.com
           server_port: 465
           secure: true
-          username: caovonhatminh09091999@gmail.com
-          password: ${{ secrets.SMTP_PASSWORD }}
+          username: ${{ env.SMTP_USERNAME }}
+          password: ${{ env.SMTP_PASSWORD }}
           subject: "[GitHub Actions] ${{ github.repository }} - ${{ job.status }}"
           to: caovonhatminh09091999@gmail.com
           from: caovonhatminh09091999@gmail.com
