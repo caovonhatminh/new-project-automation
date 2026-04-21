@@ -1,0 +1,20 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+.venv_broken_*/
+.virtualenv_app_data/
+
+# Tooling/editor
+.pytest_cache/
+.vscode/
+
+# Test artifacts and logs
+artifacts/
+*.log
+
+# Large/local binaries
+*.zip
+
