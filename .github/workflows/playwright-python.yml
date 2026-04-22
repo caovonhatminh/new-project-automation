@@ -40,7 +40,13 @@ jobs:
         run: python -m playwright install --with-deps chromium
 
       - name: Run full suite
-        run: pytest tests api_tests e2e_tests --html=artifacts/reports/full-report.html --self-contained-html
+        run: |
+          pytest tests api_tests e2e_tests \
+            --reruns 1 \
+            --reruns-delay 3 \
+            --html=artifacts/reports/full-report.html \
+            --self-contained-html \
+            --junitxml=artifacts/reports/junit.xml
 
       - name: Upload automation artifacts
         if: always()
