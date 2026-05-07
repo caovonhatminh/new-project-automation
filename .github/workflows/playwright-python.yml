@@ -1,12 +1,9 @@
-name: Daily Full Automation
+name: Full Automation
 
 on:
   push:
     branches:
       - main
-  schedule:
-    # 18:00 UTC = 01:00 Asia/Bangkok (UTC+7) on the next day.
-    - cron: "0 18 * * *"
   workflow_dispatch:
 
 jobs:
